@@ -38,6 +38,28 @@ MyOpenGLWidget::MyOpenGLWidget(QWidget *parent)
 
 MyOpenGLWidget::~MyOpenGLWidget()
 {
+    makeCurrent(); // 确保当前上下文有效
+    glDeleteVertexArrays(1, &VAO); // 删除VAO
+    glDeleteBuffers(1, &VBO); // 删除VBO
+    glDeleteBuffers(1, &EBO); // 删除EBO
+    glDeleteProgram(shaderProgram); // 删除着色器程序
+    doneCurrent(); // 释放当前上下文
+}
+
+void MyOpenGLWidget::drawShape(Shape shape)
+{
+    m_shape = shape; // 设置当前绘制的形状
+    update(); // 更新窗口，触发paintGL()函数
+}
+
+void MyOpenGLWidget::setWireframeMode(bool enabled)
+{
+    makeCurrent(); // 确保当前上下文有效
+    // 绘制模式 默认是填充模式 GL_FILL
+    if (enabled) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 线框模式
+    else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // 填充模式
+    doneCurrent(); // 释放当前上下文
+    update(); // 更新窗口，触发paintGL()函数
 }
 
 void MyOpenGLWidget::initializeGL()
@@ -90,9 +112,6 @@ void MyOpenGLWidget::initializeGL()
     // 删除着色器对象
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
-    // 绘制模式 默认是填充模式 GL_FILL
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 线框模式
 }
 
 void MyOpenGLWidget::resizeGL(int w, int h)
@@ -106,7 +125,19 @@ void MyOpenGLWidget::paintGL()
 
     glUseProgram(shaderProgram); // 使用着色器程序
     glBindVertexArray(VAO); // 绑定VAO
-    // glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
-    // glDrawArrays(GL_TRIANGLES, 0, 6); // 绘制矩形
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 绘制矩形(使用索引)
+
+    switch (m_shape)
+    {
+    case Shape::None:
+        break;
+    case Shape::Rectangle:
+    {
+        // glDrawArrays(GL_TRIANGLES, 0, 6); // 绘制矩形
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 绘制矩形(使用索引)
+        break;
+    }
+    case Shape::Triangle:
+        glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
+        break;
+    }
 }

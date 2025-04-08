@@ -27,8 +27,18 @@ class MyOpenGLWidget : public QOpenGLWidget, QOpenGLFunctions_3_3_Core
 {
     Q_OBJECT
 public:
+    enum Shape {
+        None,
+        Rectangle,
+        Triangle,
+    };
+
+public:
     explicit MyOpenGLWidget(QWidget *parent = nullptr);
     ~MyOpenGLWidget() override;
+
+    void drawShape(Shape shape); // 绘制形状
+    void setWireframeMode(bool enabled); // 设置线框模式
 
 protected:
     void initializeGL() override; // 初始化OpenGL环境
@@ -41,6 +51,8 @@ private:
     // EBO (Element Buffer Object / Index Buffer Object) - 存储顶点索引（索引）
     unsigned int VAO, VBO, EBO;
     unsigned int shaderProgram;
+
+    Shape m_shape = None; // 当前绘制的形状
 
 const char* vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
