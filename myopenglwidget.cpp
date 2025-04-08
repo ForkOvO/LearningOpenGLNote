@@ -42,7 +42,7 @@ MyOpenGLWidget::~MyOpenGLWidget()
     glDeleteVertexArrays(1, &VAO); // 删除VAO
     glDeleteBuffers(1, &VBO); // 删除VBO
     glDeleteBuffers(1, &EBO); // 删除EBO
-    glDeleteProgram(shaderProgram); // 删除着色器程序
+    // glDeleteProgram(shaderProgram); // 删除着色器程序
     doneCurrent(); // 释放当前上下文
 }
 
@@ -93,25 +93,35 @@ void MyOpenGLWidget::initializeGL()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    m_shaderProgram = new QOpenGLShaderProgram(this); // 创建着色器程序对象
+#if 0
     // 顶点着色器
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
+    // unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    // glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    // glCompileShader(vertexShader);
+    m_shaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource); // 添加顶点着色器
 
     // 片段着色器
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
+    // unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    // glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    // glCompileShader(fragmentShader);
+    m_shaderProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource); // 添加片段着色器
 
     // 链接着色器程序
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
+    // shaderProgram = glCreateProgram();
+    // glAttachShader(shaderProgram, vertexShader);
+    // glAttachShader(shaderProgram, fragmentShader);
+    // glLinkProgram(shaderProgram);
+    m_shaderProgram->link(); // 链接着色器程序
 
     // 删除着色器对象
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    // glDeleteShader(vertexShader);
+    // glDeleteShader(fragmentShader);
+#else
+    m_shaderProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/shapes.vert"); // 添加顶点着色器
+    m_shaderProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/shapes.frag"); // 添加片段着色器
+    m_shaderProgram->link(); // 链接着色器程序
+#endif
 }
 
 void MyOpenGLWidget::resizeGL(int w, int h)
@@ -123,7 +133,8 @@ void MyOpenGLWidget::paintGL()
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // 设置清除后颜色
     glClear(GL_COLOR_BUFFER_BIT); // 清除颜色缓冲区
 
-    glUseProgram(shaderProgram); // 使用着色器程序
+    // glUseProgram(shaderProgram); // 使用着色器程序
+    m_shaderProgram->bind(); // 使用着色器程序
     glBindVertexArray(VAO); // 绑定VAO
 
     switch (m_shape)

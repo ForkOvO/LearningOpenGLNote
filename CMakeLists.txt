@@ -15,6 +15,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin) # 可执行文件输出目
 qt_add_executable(
     ${PROJECT_NAME} # 可执行文件名称
     MANUAL_FINALIZATION # 手动完成
+    res.qrc
     main.cpp
     mainwindow.h mainwindow.cpp
     myopenglwidget.h myopenglwidget.cpp

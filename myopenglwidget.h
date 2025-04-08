@@ -3,6 +3,7 @@
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLShaderProgram>
 
 /*
 顶点着色器 - 处理顶点数据
@@ -50,10 +51,11 @@ private:
     // VBO (Vertex Buffer Object)- 存储顶点数据（数据）
     // EBO (Element Buffer Object / Index Buffer Object) - 存储顶点索引（索引）
     unsigned int VAO, VBO, EBO;
-    unsigned int shaderProgram;
 
     Shape m_shape = None; // 当前绘制的形状
-
+    QOpenGLShaderProgram *m_shaderProgram = nullptr; // 着色器程序
+#if 0
+    // unsigned int shaderProgram; // 着色器程序
 const char* vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "void main()\n"
@@ -67,6 +69,7 @@ const char* fragmentShaderSource = "#version 330 core\n"
     "{\n"
     "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
     "}\0";
+#endif
 };
 
 #endif // MYOPENGLWIDGET_H
