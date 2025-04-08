@@ -16,6 +16,11 @@
 在OpenGL中，所有的坐标都是在一个标准化的设备坐标系中进行处理的。这个坐标系的范围是[-1, 1]，
 其中x轴和y轴分别表示水平和垂直方向，z轴表示深度。这个坐标系被称为标准化设备坐标（NDC）。
 在NDC中，左下角的点是(-1, -1)，右上角的点是(1, 1)。所有的顶点坐标都需要经过一个变换过程，将其转换为NDC坐标。
+
+OpenGL是一个巨大的状态机
+VAO会保存所有的状态信息，包括VBO和EBO的绑定状态、顶点属性指针等。
+这样，在绘制时，只需要绑定VAO即可，无需再次设置所有的状态信息。
+VBO和EBO是存储数据的对象，分别用于存储顶点数据和索引数据。
 */
 
 class MyOpenGLWidget : public QOpenGLWidget, QOpenGLFunctions_3_3_Core
@@ -31,15 +36,11 @@ protected:
     void paintGL() override; // 绘制OpenGL场景
 
 private:
-    // VAO (Vertex Array Object) - 存储顶点属性配置（结构）
+    // VAO (Vertex Array Object) - 存储顶点属性配置（结构、状态）
     // VBO (Vertex Buffer Object)- 存储顶点数据（数据）
-    unsigned int VAO, VBO;
+    // EBO (Element Buffer Object / Index Buffer Object) - 存储顶点索引（索引）
+    unsigned int VAO, VBO, EBO;
     unsigned int shaderProgram;
-    float vertices[9] = { // 位置
-        -0.5f, -0.5f, 0.0f, // 左下角
-        0.5f, -0.5f, 0.0f, // 右下角
-        0.0f,  0.5f, 0.0f  // 顶部
-    };
 
 const char* vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
