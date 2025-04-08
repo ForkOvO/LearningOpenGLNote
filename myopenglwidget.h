@@ -4,6 +4,7 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLShaderProgram>
+#include <QTimer>
 
 /*
 顶点着色器 - 处理顶点数据
@@ -47,12 +48,16 @@ protected:
     void paintGL() override; // 绘制OpenGL场景
 
 private:
+    void onTimerTimeout(); // 定时器超时处理函数
+
+private:
     // VAO (Vertex Array Object) - 存储顶点属性配置（结构、状态）
     // VBO (Vertex Buffer Object)- 存储顶点数据（数据）
     // EBO (Element Buffer Object / Index Buffer Object) - 存储顶点索引（索引）
     unsigned int VAO, VBO, EBO;
 
     Shape m_shape = None; // 当前绘制的形状
+    QTimer *m_timer = nullptr; // 定时器
     QOpenGLShaderProgram *m_shaderProgram = nullptr; // 着色器程序
 #if 0
     // unsigned int shaderProgram; // 着色器程序
