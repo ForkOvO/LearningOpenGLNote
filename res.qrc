@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>shaders/shapes.frag</file>
         <file>shaders/shapes.vert</file>
+        <file>res/awesomeface.png</file>
+        <file>res/wall.jpg</file>
     </qresource>
 </RCC>

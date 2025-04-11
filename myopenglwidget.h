@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLShaderProgram>
 #include <QTimer>
+#include <QOpenGLTexture>
 
 /*
 顶点着色器 - 处理顶点数据
@@ -13,11 +14,6 @@
 光栅化 - 将图元转换为片段数据
 片段着色器 - 处理片段数据
 测试与混合 - 处理片段数据，决定最终颜色
-
-标准化设备坐标（NDC）
-在OpenGL中，所有的坐标都是在一个标准化的设备坐标系中进行处理的。这个坐标系的范围是[-1, 1]，
-其中x轴和y轴分别表示水平和垂直方向，z轴表示深度。这个坐标系被称为标准化设备坐标（NDC）。
-在NDC中，左下角的点是(-1, -1)，右上角的点是(1, 1)。所有的顶点坐标都需要经过一个变换过程，将其转换为NDC坐标。
 
 OpenGL是一个巨大的状态机
 VAO会保存所有的状态信息，包括VBO和EBO的绑定状态、顶点属性指针等。
@@ -59,22 +55,8 @@ private:
     Shape m_shape = None; // 当前绘制的形状
     QTimer *m_timer = nullptr; // 定时器
     QOpenGLShaderProgram *m_shaderProgram = nullptr; // 着色器程序
-#if 0
-    // unsigned int shaderProgram; // 着色器程序
-const char* vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
-
-const char* fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "}\0";
-#endif
+    QOpenGLTexture* m_texture1 = nullptr; // 纹理
+    QOpenGLTexture* m_texture2 = nullptr; // 纹理
 };
 
 #endif // MYOPENGLWIDGET_H
