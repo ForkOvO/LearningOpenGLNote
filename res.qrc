@@ -4,5 +4,6 @@
         <file>shaders/shapes.vert</file>
         <file>res/awesomeface.png</file>
         <file>res/wall.jpg</file>
+        <file>qss/style.qss</file>
     </qresource>
 </RCC>

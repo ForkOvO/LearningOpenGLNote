@@ -3,6 +3,7 @@
 
 #include <QMenuBar>
 #include <QToolBar>
+#include <QFile>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,19 +11,12 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("OpenGL Demo");
     setMinimumSize(800, 600);
 
-    setStyleSheet("\
-        QWidget {\
-            background-color: rgb(68, 68, 68);\
-            color: rgb(255, 255, 255);\
-            font: 10pt \"幼圆\";\
-        }\
-        QWidget:checked {\
-            background-color: rgb(150, 150, 150);\
-        }\
-        QMenuBar {\
-            background-color: rgb(200, 200, 200);\
-            color: rgb(60, 60, 60);\
-        }");
+    QFile styleFile("qss/style.qss");
+    if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
+        QTextStream stream(&styleFile);
+        setStyleSheet(stream.readAll());
+        styleFile.close();
+    }
 
     m_openglWidget = new MyOpenGLWidget(this);
     setCentralWidget(m_openglWidget);
