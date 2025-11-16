@@ -28,6 +28,9 @@ unsigned int indices[] = { // 索引数组
 MyOpenGLWidget::MyOpenGLWidget(QWidget *parent)
     : QOpenGLWidget(parent)
 {
+    m_timer = new QTimer(this); // 创建定时器对象
+    connect(m_timer, &QTimer::timeout, this, &MyOpenGLWidget::onTimerTimeout); // 连接定时器超时信号
+    m_timer->start(100); // 启动定时器，100ms触发一次
 }
 
 MyOpenGLWidget::~MyOpenGLWidget()
@@ -74,10 +77,6 @@ void MyOpenGLWidget::initializeGL()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
     m_shaderProgram = new QOpenGLShaderProgram(this); // 创建着色器程序对象
-    m_timer = new QTimer(this); // 创建定时器对象
-    connect(m_timer, &QTimer::timeout, this, &MyOpenGLWidget::onTimerTimeout); // 连接定时器超时信号
-    m_timer->start(100); // 启动定时器，100ms触发一次
-
     m_shaderProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/shapes.vert"); // 添加顶点着色器
     m_shaderProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/shapes.frag"); // 添加片段着色器
     m_shaderProgram->link(); // 链接着色器程序
@@ -138,6 +137,22 @@ void MyOpenGLWidget::paintGL()
         // 设置纹理环绕方式
         m_texture1->setWrapMode(QOpenGLTexture::Repeat); // 重复纹理
         m_texture2->setWrapMode(QOpenGLTexture::MirroredRepeat); // 镜像重复纹理
+
+        // 矩阵变换
+        QMatrix4x4 matrix;
+        unsigned int timeValue = QTime::currentTime().msec(); // 获取当前毫秒数
+        matrix.translate(0.5f, -0.5f, 0.0f); // 平移矩阵
+        matrix.rotate(timeValue * 0.1f, 0.0f, 0.0f, 1.0f); // 旋转矩阵
+        m_shaderProgram->setUniformValue("theMatrixl", matrix); // 设置uniform变量
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 绘制矩形(使用索引)
+
+        // 第二个矩形
+        matrix.setToIdentity(); // 重置矩阵
+        matrix.translate(-0.5f, 0.5f, 0.0f); // 平移矩阵
+        matrix.scale(fabs(sin(timeValue))); // 缩放矩阵
+        m_shaderProgram->setUniformValue("theMatrixl", matrix); // 设置uniform变量
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 绘制矩形(使用索引)
         break;
     }
